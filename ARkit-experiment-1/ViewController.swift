@@ -5,7 +5,7 @@
 //  Created by Nagase on 2018/12/30.
 //  Copyright © 2018 Nagase Denki. All rights reserved.
 //
-
+// AR空間上に立方体を表示するプログラム
 import UIKit
 import ARKit
 
@@ -25,10 +25,7 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
     }
     
     /**
-     サンプルメソッド
-     - parameter sender: パラメータの書き方
-     - throws: 例外処理の書き方
-     - returns: 戻り値の書き方
+     //追加ボタンを押したとき
      */
     @IBAction func add(_ sender: Any) {
         print("button is pressed")
@@ -40,13 +37,21 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
         //ライトを追加
         node.geometry?.firstMaterial?.specular.contents = UIColor.white
         //boxの色を指定
-        node.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+        node.geometry?.firstMaterial?.diffuse.contents = getRandomColor()
         
+        //ランダムな場所に四角オブジェクトを追加する
         let x = randomNumbers(firstNum: -0.3, secondNum: 0.3)
         let y = randomNumbers(firstNum: -0.3, secondNum: 0.3)
         let z = randomNumbers(firstNum: -0.3, secondNum: 0.3)
-        //specify position (unit is meter)
         node.position = SCNVector3(x,y,z)
+        
+        
+        //カメラの位置にオブジェクトを追加
+        guard let pointOfView = sceneView.pointOfView else { return }
+        let transform = pointOfView.transform
+        let orientation = SCNVector3(-transform.m31, -transform.m32, transform.m33)
+        let location = SCNVector3(transform.m41, transform.m42, transform.m43)
+        node.position = location
         
         //現在の位置を取得
         let pov = self.sceneView.pointOfView
@@ -59,7 +64,6 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
         self.restartSession()
         
     }
-    
     /*
     * セッションをリセットする。
     */
@@ -71,23 +75,32 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
         }
         self.sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
+    
     //ランダム値を取得する
     func randomNumbers(firstNum: CGFloat, secondNum:CGFloat)->CGFloat{
         return CGFloat(arc4random()) / CGFloat(UINT32_MAX) * abs(firstNum - secondNum) + min(firstNum, secondNum)
     }
+    
+    //指定した色の中からランダムに選択した色を返す
+    func getRandomColor()-> UIColor{
+        
+        return UIColor.green
+    }
+    
     
     func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
         let orientation = SCNVector3(-transform.m31, -transform.m32, transform.m33)
         let location = SCNVector3(transform.m41, transform.m42, transform.m43)
-        //let currentPositionOfCamera = orientation + location
         print(location)
     }
     
-//    static func +(lhv:SCNVector3, rhv:SCNVector3) -> SCNVector3 {
-//        return SCNVector3(lhv.x + rhv.x, lhv.y + rhv.y, lhv.z + rhv.z)
-//    }
 
 }
 
+func +(left: SCNVector3, right: SCNVector3) -> SCNVector3 {
+    
+    return SCNVector3Make(left.x + right.x, left.y + right.y, left.z + right.z)
+    
+}
