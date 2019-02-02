@@ -17,6 +17,8 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
         super.viewDidLoad()
         //debug用に現在のポジションを表示
         self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+        //画面下にfpsなどを表示する。
+        self.sceneView.showsStatistics = true
         //この記述でデバイスが現在の位置をトラッキングできるようになる。
         self.sceneView.session.run(configuration)
         //ライティングのための要素を自動的に追加する。
@@ -37,13 +39,13 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
         //ライトを追加
         node.geometry?.firstMaterial?.specular.contents = UIColor.white
         //boxの色を指定
-        node.geometry?.firstMaterial?.diffuse.contents = getRandomColor()
+        node.geometry?.firstMaterial?.diffuse.contents = ObjectColor.allCases.randomElement()?.introduced()
         
         //ランダムな場所に四角オブジェクトを追加する
-        let x = randomNumbers(firstNum: -0.3, secondNum: 0.3)
-        let y = randomNumbers(firstNum: -0.3, secondNum: 0.3)
-        let z = randomNumbers(firstNum: -0.3, secondNum: 0.3)
-        node.position = SCNVector3(x,y,z)
+//        let x = randomNumbers(firstNum: -0.3, secondNum: 0.3)
+//        let y = randomNumbers(firstNum: -0.3, secondNum: 0.3)
+//        let z = randomNumbers(firstNum: -0.3, secondNum: 0.3)
+//        node.position = SCNVector3(x,y,z)
         
         
         //カメラの位置にオブジェクトを追加
@@ -82,10 +84,10 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
     }
     
     //指定した色の中からランダムに選択した色を返す
-    func getRandomColor()-> UIColor{
-        
-        return UIColor.green
-    }
+//    func getRandomColor()-> UIColor{
+//
+//        return UIColor.green
+//    }
     
     
     func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
@@ -100,7 +102,29 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
 }
 
 func +(left: SCNVector3, right: SCNVector3) -> SCNVector3 {
-    
+
     return SCNVector3Make(left.x + right.x, left.y + right.y, left.z + right.z)
-    
 }
+
+
+enum ObjectColor :CaseIterable{
+    case Blue, Red, Green,Black, darkGray, Gray, Cyan, Magenta, Orange, Purple,Brown
+    func introduced() -> UIColor {
+        switch self {
+        case .Blue: return UIColor.blue
+        case .Red: return UIColor.red
+        case .Green: return UIColor.green
+        case .Black: return UIColor.black
+        case .darkGray: return UIColor.darkGray
+        case .Cyan: return UIColor.cyan
+        case .Magenta: return UIColor.magenta
+        case .Orange:return UIColor.orange
+        case .Purple:return UIColor.purple
+        case .Brown:return UIColor.green
+        case .Gray:return UIColor.gray
+        }
+    }
+}
+
+
+
