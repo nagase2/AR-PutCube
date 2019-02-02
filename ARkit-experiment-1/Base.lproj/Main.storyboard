@@ -24,16 +24,30 @@
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nrJ-gV-dB0">
                                 <rect key="frame" x="34" y="589" width="64" height="58"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Button">
+                                <state key="normal" title="add">
                                     <color key="titleShadowColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="add:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cww-TS-34g"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PdR-MY-zO3">
+                                <rect key="frame" x="285" y="577" width="70" height="70"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="2Sm-Xy-FvD"/>
+                                    <constraint firstAttribute="width" constant="70" id="7R9-U1-a6f"/>
+                                </constraints>
+                                <state key="normal" title="Reset"/>
+                                <connections>
+                                    <action selector="reset:" destination="BYZ-38-t0r" eventType="touchUpInside" id="o9k-rq-nrl"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="PdR-MY-zO3" secondAttribute="trailing" constant="20" id="22c-Zk-lOB"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="PdR-MY-zO3" secondAttribute="bottom" constant="20" id="Dgs-BH-4q7"/>
                             <constraint firstItem="weV-Gq-4Pn" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="FbN-j6-J1M"/>
                             <constraint firstItem="weV-Gq-4Pn" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="PEU-fr-nYS"/>
                             <constraint firstItem="weV-Gq-4Pn" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Pxj-DP-ndU"/>
