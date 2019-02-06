@@ -24,7 +24,32 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
         //ライティングのための要素を自動的に追加する。
         self.sceneView.autoenablesDefaultLighting = true
         // Do any additional setup after loading the view, typically from a nib.
+        
+        
+        
+        //タップ検出
+        let tapGestureRecognizer = UITapGestureRecognizer(target:self,
+                                                          action: #selector(handleTap))
+        sceneView.addGestureRecognizer(tapGestureRecognizer)
     }
+    
+    //リセットボタン
+    @IBAction func reset(_ sender: Any) {
+        self.restartSession()
+        
+    }
+    /*
+     * セッションをリセットする。
+     */
+    func restartSession(){
+        print("restat session")
+        self.sceneView.session.pause()
+        self.sceneView.scene.rootNode.enumerateChildNodes{(node, _) in
+            node.removeFromParentNode()
+        }
+        self.sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+    }
+    
     
     /**
      //追加ボタンを押したとき
@@ -35,6 +60,7 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
         let node = SCNNode()
         //specfy the size of the box chamerRediousは角の丸めの値。
         node.geometry = SCNBox(width:0.1, height:0.1, length:0.1, chamferRadius:0.03)
+        node.name = "square"
         
         //ライトを追加
         node.geometry?.firstMaterial?.specular.contents = UIColor.white
@@ -55,51 +81,67 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
         let location = SCNVector3(transform.m41, transform.m42, transform.m43)
         node.position = location
         
-        //現在の位置を取得
-        let pov = self.sceneView.pointOfView
-        let position = pov?.position
-        print(position)
+        
+        //少し前に配置する
+        let position = SCNVector3(x:0,y:0,z:-0.3)
+        if let camera = sceneView.pointOfView{
+            node.position = camera.convertPosition(position, to: nil)
+            //自分の方にオブジェクトの向きを調整する
+            node.eulerAngles = camera.eulerAngles
+        }
+        
+   
         self.sceneView.scene.rootNode.addChildNode(node)
         
     }
-    @IBAction func reset(_ sender: Any) {
-        self.restartSession()
+    
+    
+    //オブジェクト触ったときのアクション
+    @objc func handleTap(sender: UITapGestureRecognizer){
+        print("tapped")
+        let sceneViewTappedOn = sender.view as! SCNView
+        let touchCoordinates = sender.location(in: sceneViewTappedOn)
+        let hitTest = sceneViewTappedOn.hitTest(touchCoordinates)
         
-    }
-    /*
-    * セッションをリセットする。
-    */
-    func restartSession(){
-        print("restat session")
-        self.sceneView.session.pause()
-        self.sceneView.scene.rootNode.enumerateChildNodes{(node, _) in
-            node.removeFromParentNode()
+        if hitTest.isEmpty{
+            print("didn't touch anything")
+        }else{
+            print("something has been touched")
+            let results = hitTest.first!
+            let node = results.node
+            
+           
+            print(node.name)
+            //四角がクリックされたらiPhoneを揺らす
+            if node.name?.contains("square")==true {
+                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+                AudioServicesDisposeSystemSoundID(kSystemSoundID_Vibrate)
+            }
         }
-        self.sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
+
+
     
     //ランダム値を取得する
     func randomNumbers(firstNum: CGFloat, secondNum:CGFloat)->CGFloat{
         return CGFloat(arc4random()) / CGFloat(UINT32_MAX) * abs(firstNum - secondNum) + min(firstNum, secondNum)
     }
     
-    //指定した色の中からランダムに選択した色を返す
-//    func getRandomColor()-> UIColor{
+    
+    
+//    func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
+//        guard let pointOfView = sceneView.pointOfView else { return }
+//        let transform = pointOfView.transform
+//        let orientation = SCNVector3(-transform.m31, -transform.m32, transform.m33)
+//        let location = SCNVector3(transform.m41, transform.m42, transform.m43)
+//        print(location)
 //
-//        return UIColor.green
 //    }
-    
-    
-    func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
-        guard let pointOfView = sceneView.pointOfView else { return }
-        let transform = pointOfView.transform
-        let orientation = SCNVector3(-transform.m31, -transform.m32, transform.m33)
-        let location = SCNVector3(transform.m41, transform.m42, transform.m43)
-        print(location)
-    }
     
 
 }
+
+
 
 func +(left: SCNVector3, right: SCNVector3) -> SCNVector3 {
 
