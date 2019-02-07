@@ -73,7 +73,6 @@ class ViewController: UIViewController ,ARSCNViewDelegate{
 //        let z = randomNumbers(firstNum: -0.3, secondNum: 0.3)
 //        node.position = SCNVector3(x,y,z)
         
-        
         //カメラの位置にオブジェクトを追加
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
